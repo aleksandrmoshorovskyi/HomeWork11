@@ -25,8 +25,16 @@ class ProfileViewController: BaseViewController {
     private var editMode = false
     private let maxCount = 30
     
+    //для різної кількості у різних текстових полях
+    private var countForTextField: [UITextField : (label: UILabel, maxCount: Int)] = [ : ]
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        //для різної кількості у різних текстових полях
+        countForTextField[firstNameTextField] = (firstCountLabel, 30)
+        countForTextField[lastNameTextField] = (lastCountLable, 30)
+        
         setupActions()
         setupTextFieldMode()
     }
@@ -69,23 +77,23 @@ private extension ProfileViewController {
         updateCounters()
     }
     
-    func getAttributedStrFor(count: Int) -> NSAttributedString {
-        let strAttribute = [ NSAttributedString.Key.foregroundColor: count < maxCount ? UIColor.systemGreen : UIColor.systemRed ]
-        let lableStrAttributed = NSAttributedString(string: String(count), attributes: strAttribute)
-        
-        return lableStrAttributed
+    func setLabel(_ label: UILabel, for textField: UITextField, withMaxCount maxCount: Int) {
+        if let text = textField.text {
+            
+            let textCurrentCount = text.count
+            
+            let strAttribute = [ NSAttributedString.Key.foregroundColor: textCurrentCount < maxCount ? UIColor.systemGreen : UIColor.systemRed ]
+            
+            let lableStrAttributed = NSAttributedString(string: String(textCurrentCount), attributes: strAttribute)
+            
+            label.attributedText = lableStrAttributed
+        }
     }
     
     func updateCounters() {
-        firstCountLabel.isHidden = !editMode
-        lastCountLable.isHidden = !editMode
-        
-        if let text = firstNameTextField.text {
-            firstCountLabel.attributedText = getAttributedStrFor(count: text.count)
-        }
-        
-        if let text = lastNameTextField.text {
-            lastCountLable.attributedText  = getAttributedStrFor(count: text.count)
+        for (textField, params) in countForTextField {
+            params.label.isHidden = !editMode
+            setLabel(params.label, for: textField, withMaxCount: params.maxCount)
         }
     }
 }
@@ -95,7 +103,7 @@ extension ProfileViewController: UITextFieldDelegate {
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         
-        return checkTextField(textField, in: range, str: string, for: maxCount)
+        return checkTextField(textField, in: range, str: string, for: countForTextField[textField]?.maxCount ?? maxCount)
     }
     
     private func checkTextField(_ textField: UITextField, in range: NSRange, str string: String, for count: Int) -> Bool {
