@@ -71,8 +71,9 @@ private extension ProfileViewController {
     }
     
     func setupTextFieldMode() {
-        firstNameTextField.isEnabled = editMode
-        lastNameTextField.isEnabled = editMode
+        for textField in countForTextField.keys {
+            textField.isEnabled = editMode
+        }
         
         updateCounters()
     }
