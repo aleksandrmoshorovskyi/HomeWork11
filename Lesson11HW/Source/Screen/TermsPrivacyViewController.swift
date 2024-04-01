@@ -19,17 +19,7 @@ class TermsPrivacyViewController: BaseViewController {
         
         agreeBtn.layer.cornerRadius = 4
         
-        setAgreeBtn(false)
-    }
-    
-    private func setAgreeBtn(_ enableMode: Bool) {
-        if enableMode {
-            agreeBtn.isEnabled = true
-            agreeBtn.backgroundColor = .systemBlue
-        } else {
-            agreeBtn.isEnabled = false
-            agreeBtn.backgroundColor = .systemGray
-        }
+        setupButton(agreeBtn, with: false)
     }
 }
 
@@ -37,14 +27,9 @@ extension TermsPrivacyViewController: UITextViewDelegate {
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         
-        let scrollPositionY = scrollView.contentOffset.y
-        let contentHeight = scrollView.contentSize.height
-        let frameHeight = scrollView.frame.size.height
-        
-        let bottomPosition = scrollView.contentOffset.y + scrollView.frame.size.height
-        
-        if bottomPosition >= contentHeight {
-            setAgreeBtn(true)
+        if scrollView.contentOffset.y + scrollView.frame.size.height >=
+            scrollView.contentSize.height {
+            setupButton(agreeBtn, with: true)
         }
     }
 }

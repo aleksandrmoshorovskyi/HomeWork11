@@ -62,7 +62,7 @@ private extension ProfileViewController {
     }
     
     @objc func changeModeButtonDidTap() {
-        debugPrint("ProfileViewController -> changeModeButtonDidTap")
+        //debugPrint("ProfileViewController -> changeModeButtonDidTap")
         
         editMode = !editMode
         updateRigthtBarButton()
@@ -83,7 +83,7 @@ private extension ProfileViewController {
             
             let textCurrentCount = text.count
             
-            let strAttribute = [ NSAttributedString.Key.foregroundColor: textCurrentCount < maxCount ? UIColor.systemGreen : UIColor.systemRed ]
+            let strAttribute = [NSAttributedString.Key.foregroundColor: textCurrentCount < countForTextField[textField]?.maxCount ?? maxCount ? UIColor.systemGreen : UIColor.systemRed]
             
             let lableStrAttributed = NSAttributedString(string: String(textCurrentCount), attributes: strAttribute)
             
@@ -104,17 +104,6 @@ extension ProfileViewController: UITextFieldDelegate {
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         
-        return checkTextField(textField, in: range, str: string, for: countForTextField[textField]?.maxCount ?? maxCount)
-    }
-    
-    private func checkTextField(_ textField: UITextField, in range: NSRange, str string: String, for count: Int) -> Bool {
-        
-        let currentText = textField.text ?? ""
-        
-        guard let stringRange = Range(range, in: currentText) else { return false }
-        
-        let updatedText = currentText.replacingCharacters(in: stringRange, with: string)
-
-        return updatedText.count <= count
+        return checkTextField(textField.text, in: range, str: string, for: countForTextField[textField]?.maxCount ?? maxCount)
     }
 }
